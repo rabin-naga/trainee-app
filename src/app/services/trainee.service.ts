@@ -7,7 +7,6 @@ export class TraineeService {
   // change to savedFilterValue
   filterValue: string = "";
   selectedTrainee: Trainee;
-  selectedTraineeIndex: number;
 
   constructor() {}
 
@@ -19,11 +18,13 @@ export class TraineeService {
     TRAINEE_LIST.unshift(trainee);
   }
 
-  updateTrainee(trainee: Trainee, index: number) {
-    TRAINEE_LIST[index] = trainee;
+  updateTrainee(newTrainee: Trainee, selectedTrainee: Trainee) {
+    const index = TRAINEE_LIST.indexOf(selectedTrainee);
+    TRAINEE_LIST[index] = newTrainee;
   }
 
-  deleteTrainee(index) {
+  deleteTrainee(selectedTrainee: Trainee) {
+    const index = TRAINEE_LIST.indexOf(selectedTrainee);
     TRAINEE_LIST.splice(index, 1);
   }
 }

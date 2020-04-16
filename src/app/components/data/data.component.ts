@@ -3,7 +3,6 @@ import { MatTableDataSource, MatPaginator } from "@angular/material";
 import { TraineeService } from "../../services/trainee.service";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { Trainee } from "../../models/trainee.model";
-
 @Component({
   selector: "app-data",
   templateUrl: "./data.component.html",
@@ -11,7 +10,6 @@ import { Trainee } from "../../models/trainee.model";
 })
 export class DataComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild("searchInput") searchInput: ElementRef;
 
   // table
   displayedColumns = ["id", "name", "date", "grade", "subject"];
@@ -21,8 +19,6 @@ export class DataComponent implements OnInit {
   // trainee detail section form
   traineeForm: FormGroup;
   selectedTrainee: Trainee;
-  selectedTraineeIndex: number;
-  submitted: boolean;
 
   // regex
   emailRegex =
@@ -34,7 +30,9 @@ export class DataComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.getPreviousState();
+    this.getPreviousState(); // obtain previous state
+    this.getTraineeList();
+    this.buildTraineeForm();
   }
 
   /**
@@ -72,38 +70,26 @@ export class DataComponent implements OnInit {
   }
 
   /**
-   * list filtered trainee
-   * @param filterValue
-   */
-  applyFilter(filterValue: string) {
-    filterValue = filterValue.trim(); // Remove whitespace
-    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
-    this.traineeService.filterValue = filterValue; // store filter value for future purpose
-    this.filterText = filterValue;
-    this.dataSource.filter = filterValue;
-  }
-
-  /**
-   * stores the selected trainee value and index
-   * @param trainee: selected trainee
-   * @param index: selected trainee index
-   */
-  selectTrainee(trainee: Trainee, index: number) {
-    this.selectedTrainee = trainee;
-    this.selectedTraineeIndex = index;
-    this.setSelectedTraineeonService();
-  }
-
-  /**
    * retrives list of trainee
    * in presence of filter text, filters the list accordingly
    */
   getTraineeList() {
     const traineeList = this.traineeService.getTraineeList();
     this.dataSource = new MatTableDataSource(traineeList);
-    // get the list of filtered trainee on returning back to this component
 
-    if (this.filterText) this.applyFilter(this.filterText);
+    if (this.filterText) this.applyFilter(this.filterText); // get filtered trainee on returning back to this component
+  }
+
+  /**
+   * executes when user types on filter input
+   * list filtered trainee by filterValue
+   * @param filterValue - text from filter input
+   */
+  applyFilter(filterValue: string) {
+    filterValue = filterValue.trim().toLowerCase(); // Remove whitespace // MatTableDataSource defaults to lowercase matches
+    this.traineeService.filterValue = filterValue; // preseve filter text even on destruction of DataComponent
+    this.filterText = filterValue;
+    this.dataSource.filter = filterValue; // filter trainee by filterValue
   }
 
   /**
@@ -111,30 +97,29 @@ export class DataComponent implements OnInit {
    * clears the form in presence of selected trainee
    */
   addTrainee() {
-    this.submitted = true;
     if (this.traineeForm.invalid) return;
 
-    // clears the form incase the trainee is selected
+    // clears the form incase the trainee is selected already
     if (this.selectedTrainee) {
       this.resetSelectedTraineeAndForm();
       return;
     }
 
     this.traineeService.addTrainee(this.traineeForm.value);
+    alert("Trainee added successfully");
     this.getTraineeList();
     this.resetSelectedTraineeAndForm();
   }
 
   /**
-   * updates the trainee being edited in the grid
-   * stores the change in selected trainee
+   * bind the updates of trainee which is being edited on the detail form to the table
    */
   updateTrainee() {
-    this.traineeService.selectedTrainee = this.traineeForm.value;
     this.traineeService.updateTrainee(
       this.traineeForm.value,
-      this.selectedTraineeIndex
+      this.selectedTrainee
     );
+    this.setSelectedTrainee(this.traineeForm.value); // set the modified trainee object for editing further or deleting
     this.getTraineeList();
   }
 
@@ -142,44 +127,38 @@ export class DataComponent implements OnInit {
    * deletes the selected trainee
    */
   removeTrainee() {
-    this.traineeService.deleteTrainee(this.selectedTraineeIndex);
+    this.traineeService.deleteTrainee(this.selectedTrainee);
+    alert("Trainee deleted successfully");
     this.getTraineeList();
     this.resetSelectedTraineeAndForm();
   }
 
   /**
-   * retrives the previous state of data on returning to the data component
+   * stores the selected trainee
+   * renders selected trainee on form
+   * @param trainee: selected trainee
+   */
+  setSelectedTrainee(trainee: Trainee) {
+    this.selectedTrainee = trainee;
+    this.traineeService.selectedTrainee = trainee; // saves the selected trainee to service variables
+    this.buildTraineeForm(); // render selected trainee on detail page form
+  }
+
+  /**
+   * retrives the previous state of data on returning to the DataComponent
    */
   getPreviousState() {
     this.selectedTrainee = this.traineeService.selectedTrainee;
-    this.selectedTraineeIndex = this.traineeService.selectedTraineeIndex;
     this.filterText = this.traineeService.filterValue;
-
-    this.getTraineeList();
-    // display the selected trainee in detail page form
-    this.buildTraineeForm();
   }
 
   /**
-   * saves the state of data in service variables
-   * renders selected trainee on form
-   */
-  setSelectedTraineeonService() {
-    this.traineeService.selectedTrainee = this.selectedTrainee;
-    this.traineeService.selectedTraineeIndex = this.selectedTraineeIndex;
-    // display the selected trainee in detail page form
-    this.buildTraineeForm();
-  }
-
-  /**
-   * clears the form as well as all the variables storing selected trainee information
+   * clears the variable storing selected trainee information
    * clears the value in service storing selected trainee
+   * clears the form
    */
   resetSelectedTraineeAndForm() {
-    this.submitted = false;
-    this.selectedTrainee = null;
-    this.selectedTraineeIndex = null;
-    this.setSelectedTraineeonService();
+    this.setSelectedTrainee(null);
     this.traineeForm.reset();
   }
 }
