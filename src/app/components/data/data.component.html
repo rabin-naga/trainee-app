@@ -6,7 +6,8 @@
       <div class="trainee-table mat-elevation-z8">
         <div class="example-header">
           <mat-form-field>
-            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter" [value]="filterText">
+            <input #searchInput matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter"
+              [value]="filterText">
           </mat-form-field>
         </div>
 
@@ -56,50 +57,65 @@
 
     <!-- Start of Trainee Detail -->
     <mat-grid-tile [colspan]="2" [rowspan]="5">
+
       <form [formGroup]="traineeForm" class="trainee-detail-container">
         <button mat-raised-button color="primary" (click)="addTrainee()">Add</button>
         <button mat-raised-button color="warn" [disabled]="!selectedTrainee" (click)="removeTrainee()">Remove</button>
-        <p>Detail</p>
 
-        <mat-form-field>
-          <input matInput placeholder="ID" formControlName="id">
-        </mat-form-field>
+        <mat-card style="margin-top: 15px">
+          <h3>Trainee Detail</h3>
 
-        <mat-form-field>
-          <input matInput placeholder="Name" formControlName="name">
-        </mat-form-field>
+          <mat-form-field>
+            <input matInput placeholder="ID" formControlName="id">
+          </mat-form-field>
 
-        <mat-form-field>
-          <input matInput placeholder="Grade" formControlName="grade">
-        </mat-form-field>
+          <mat-form-field>
+            <input matInput placeholder="Name" formControlName="name">
+            <mat-hint align="start">
+              <span class="error-msg" *ngIf="traineeForm.controls?.name?.errors?.required && submitted">
+                Name is required
+              </span>
+            </mat-hint>
+          </mat-form-field>
 
-        <mat-form-field>
-          <input matInput placeholder="Email" formControlName="email">
-        </mat-form-field>
 
-        <mat-form-field>
-          <input matInput placeholder="Date Joined" formControlName="dateJoined">
-        </mat-form-field>
+          <mat-form-field>
+            <input matInput placeholder="Grade" formControlName="grade">
+          </mat-form-field>
 
-        <mat-form-field>
-          <input matInput placeholder="Address" formControlName="address">
-        </mat-form-field>
+          <mat-form-field>
+            <input matInput placeholder="Email" formControlName="email">
+            <mat-hint align="start">
+              <span class="error-msg" *ngIf="traineeForm.controls?.email?.errors?.pattern && submitted">
+                Email is invalid
+              </span>
+            </mat-hint>
+          </mat-form-field>
 
-        <mat-form-field>
-          <input matInput placeholder="City" formControlName="city">
-        </mat-form-field>
+          <mat-form-field>
+            <input matInput placeholder="Date Joined" formControlName="dateJoined">
+          </mat-form-field>
 
-        <mat-form-field>
-          <input matInput placeholder="Country" formControlName="country">
-        </mat-form-field>
+          <mat-form-field>
+            <input matInput placeholder="Address" formControlName="address">
+          </mat-form-field>
 
-        <mat-form-field>
-          <input matInput placeholder="Zip" formControlName="zip">
-        </mat-form-field>
+          <mat-form-field>
+            <input matInput placeholder="City" formControlName="city">
+          </mat-form-field>
 
-        <mat-form-field>
-          <input matInput placeholder="Subject" formControlName="subject">
-        </mat-form-field>
+          <mat-form-field>
+            <input matInput placeholder="Country" formControlName="country">
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput placeholder="Zip" formControlName="zip">
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput placeholder="Subject" formControlName="subject">
+          </mat-form-field>
+        </mat-card>
       </form>
     </mat-grid-tile>
     <!-- End of Trainee Detail -->

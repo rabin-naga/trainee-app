@@ -6,6 +6,8 @@ import { Trainee } from "../models/trainee.model";
 export class TraineeService {
   // change to savedFilterValue
   filterValue: string = "";
+  selectedTrainee: Trainee;
+  selectedTraineeIndex: number;
 
   constructor() {}
 
