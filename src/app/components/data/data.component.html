@@ -1,0 +1,108 @@
+<mat-card>
+  <mat-grid-list cols="5">
+
+    <!-- Start of Trainee List with Filter -->
+    <mat-grid-tile [colspan]="3" [rowspan]="5">
+      <div class="trainee-table mat-elevation-z8">
+        <div class="example-header">
+          <mat-form-field>
+            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter" [value]="filterText">
+          </mat-form-field>
+        </div>
+
+        <mat-table #table [dataSource]="dataSource">
+
+          <!-- Position Column -->
+          <ng-container matColumnDef="id">
+            <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+          </ng-container>
+
+          <!-- Weight Column -->
+          <ng-container matColumnDef="grade">
+            <mat-header-cell *matHeaderCellDef> Grade </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.grade}} </mat-cell>
+          </ng-container>
+
+          <!-- Symbol Column -->
+          <ng-container matColumnDef="date">
+            <mat-header-cell *matHeaderCellDef> Date </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.dateJoined}} </mat-cell>
+          </ng-container>
+
+          <!-- Subject Column -->
+          <ng-container matColumnDef="subject">
+            <mat-header-cell *matHeaderCellDef> Subject </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.subject}} </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns; let i = index"
+            [ngClass]="{'highlight': selectedTraineeIndex == i}" (click)="selectTrainee(row, i)">
+          </mat-row>
+        </mat-table>
+
+        <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[10]" [showFirstLastButtons]="true">
+        </mat-paginator>
+      </div>
+    </mat-grid-tile>
+    <!-- End of Trainee List with Filter -->
+
+    <!-- Start of Trainee Detail -->
+    <mat-grid-tile [colspan]="2" [rowspan]="5">
+      <form [formGroup]="traineeForm" class="trainee-detail-container">
+        <button mat-raised-button color="primary" (click)="addTrainee()">Add</button>
+        <button mat-raised-button color="warn" [disabled]="!selectedTrainee" (click)="removeTrainee()">Remove</button>
+        <p>Detail</p>
+
+        <mat-form-field>
+          <input matInput placeholder="ID" formControlName="id">
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput placeholder="Name" formControlName="name">
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput placeholder="Grade" formControlName="grade">
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput placeholder="Email" formControlName="email">
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput placeholder="Date Joined" formControlName="dateJoined">
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput placeholder="Address" formControlName="address">
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput placeholder="City" formControlName="city">
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput placeholder="Country" formControlName="country">
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput placeholder="Zip" formControlName="zip">
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput placeholder="Subject" formControlName="subject">
+        </mat-form-field>
+      </form>
+    </mat-grid-tile>
+    <!-- End of Trainee Detail -->
+
+  </mat-grid-list>
+</mat-card>
