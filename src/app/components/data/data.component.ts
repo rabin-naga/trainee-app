@@ -110,7 +110,6 @@ export class DataComponent implements OnInit {
     alert("Trainee added successfully");
     this.getTraineeList();
     this.dataSource.paginator = this.paginator;
-
     this.resetSelectedTraineeAndForm();
   }
 
@@ -133,6 +132,7 @@ export class DataComponent implements OnInit {
     this.traineeService.deleteTrainee(this.selectedTrainee);
     alert("Trainee deleted successfully");
     this.getTraineeList();
+    this.dataSource.paginator = this.paginator;
     this.resetSelectedTraineeAndForm();
   }
 
