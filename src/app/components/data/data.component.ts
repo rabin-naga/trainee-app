@@ -90,6 +90,7 @@ export class DataComponent implements OnInit {
     this.traineeService.filterValue = filterValue; // preseve filter text even on destruction of DataComponent
     this.filterText = filterValue;
     this.dataSource.filter = filterValue; // filter trainee by filterValue
+    this.dataSource.paginator = this.paginator;
   }
 
   /**
@@ -108,6 +109,8 @@ export class DataComponent implements OnInit {
     this.traineeService.addTrainee(this.traineeForm.value);
     alert("Trainee added successfully");
     this.getTraineeList();
+    this.dataSource.paginator = this.paginator;
+
     this.resetSelectedTraineeAndForm();
   }
 
